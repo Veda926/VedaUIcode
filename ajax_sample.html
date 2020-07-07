@@ -1,0 +1,56 @@
+<html>
+<head>
+	<title>AJAX Sample</title>
+</head>
+<body>
+	<input type="text" id="pages"/>
+	<input type="submit" id="btn" value="Get Records">
+	<table id="usrTable" border="1" cellpadding="0" cellspacing="0">
+		<thead>
+			<th>id</th>
+			<th>Frist Name</th>
+			<th>Last Name</th>
+			<th>email</th>
+			<th>Avatar</th>
+		</thead>
+	</table>
+	<script type="text/javascript">
+		var pageEleObj = document.querySelector("#pages");/// DOM Lookup for element with an id pages
+		var btnEleObj = document.querySelector("#btn"); /// DOM Lookup for element with an id btn
+		
+		btnEleObj.onclick = fetchRecords; /// Binding an event handler to the button element
+		var res;
+		function fetchRecords(e){
+			initiateAjax();
+		}
+
+		function initiateAjax(){
+			var xhr = new XMLHttpRequest(); /// 1.creating an instance for XMLHttpRequest Object
+			xhr.open("GET", "https://reqres.in/api/users?page="+pageEleObj.value); // 2. Open connection between client and server
+			xhr.send(); //3. Send Request
+			///XHR has readyState has five values 0,1,2,3,4, for every value change the below function automatically invoked
+			xhr.onreadystatechange = function(){ 
+				if(xhr.readyState === 4 && xhr.status === 200){
+					var res = xhr.response;
+					showResponse(JSON.parse(res));
+				}
+			}
+		}
+
+		function showResponse(r){
+			var data = r.data;
+			var len = data.length;
+			var tblObj = document.querySelector("#usrTable");
+			for(var i = 0; i < len; i++){
+				var item = data[i];
+				var row = document.createElement('tr');
+				row.innerHTML = '<td>'+ item.id +'</td><td>'+ item.first_name +'</td><td>'+ item.last_name +'</td><td>'+ item.email +'</td><td><img src="'+item.avatar+'"></td>';
+				
+				tblObj.appendChild(row);
+			}
+		}
+
+	</script>
+</body>
+
+</html>
